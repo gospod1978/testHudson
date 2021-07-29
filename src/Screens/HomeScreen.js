@@ -2,34 +2,88 @@ import React, { Component } from 'react'
 import { Text, View, SafeAreaView, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import Icon from 'react-native-vector-icons/AntDesign'
 
 import { getDataList, setDataDisable } from '../Action/Action'
 
 class HomeScreen extends Component {
-    logo = require("../icons/Group.png")
+  logoOne = require("../icons/Group.png")
+  logoTwo = require("../icons/Frame.png")
 
-    constructor(props) {
-        super(props)
-        this.state = {
-        }
+  constructor(props) {
+    super(props)
+    this.state = {
+      dataList: []
     }
-    componentDidMount() {
-        console.log(this.props)
-    //    const list = this.props.getDataList()
-    //     console.log(list)
-    }
+  }
+  async componentDidMount() {
+    // console.log(this.props)
+    // this.props.getDataList()
+    var url = 'https://jsonplaceholder.typicode.com/users'
+    await fetch(url)
+      .then(response => response.json())
+      .then(data => this.setState({ dataList: data }))
+      .catch(error => console.log(error));
+    console.log('data')
+    console.log(this.state.dataList)
+  }
 
-    render () {
-        return (
-            <View style={styles.container}>
-              <Text style={styles.text}>Home Screen</Text>
-              <TouchableOpacity
-                style={styles.buttonContainer}
-                onPress={() => navigation.navigate('Login')}>
-              </TouchableOpacity>
-            </View>
-          )
-    }
+  render() {
+    return (
+      <View style={styles.container}>
+        <View style={{ flexDirection: 'row', width: 350, justifyContent: 'flex-start', alignItems: 'center', height: 60 }}>
+          <Icon name='left' color='#767676' size={(40)} onPress={() => this.props.navigation.navigate('Login')} />
+          <Text style={{ ...styles.text, marginLeft: 40 }}>Welcome Hudson</Text>
+        </View>
+
+        <View style={styles.container}>
+          <FlatList
+            data={this.state.dataList}
+            extraData={this.state}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item, index }) =>
+              <View style={{ flexDirection: 'row', width: 330, paddingHorizontal: 5, paddingVertical: 15, marginBottom: 10 }}>
+                {(() => {
+                  if (item.id % 2 == 0) {
+                    return (
+                      <TouchableOpacity onPress={() => this.props.navigation.navigate('Detail')}>
+                        <View style={{ flexDirection: 'row', width: 300, justifyContent: 'center', alignItems: 'center', height: 50, borderBottomColor: 'grey', borderBottomWidth: 2, borderTopColor: 'grey', borderTopWidth: 2 }}>
+                          <Image style={{ width: 30, height: 30 }} source={this.logoOne} resizeMode='contain' />
+                          <View style={{ flexDirection: 'column', marginLeft: 5, width: 120, justifyContent: 'center', alignItems: 'center', height: 60 }}>
+                            <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Name</Text>
+                            <Text style={{ fontSize: 10 }}>{item.name}</Text>
+                          </View>
+                          <View style={{ flexDirection: 'column', marginLeft: 5, width: 150, justifyContent: 'center', alignItems: 'center', height: 60 }}>
+                            <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Email</Text>
+                            <Text style={{ fontSize: 10 }}>{item.email}</Text>
+                          </View>
+                        </View>
+                      </TouchableOpacity>
+                    )
+                  } else {
+                    return (
+                      <TouchableOpacity onPress={() => this.props.navigation.navigate('Detail')}>
+                        <View style={{ flexDirection: 'row', width: 300, justifyContent: 'center', alignItems: 'center', height: 50, borderBottomColor: 'green', borderBottomWidth: 2, borderTopColor: 'green', borderTopWidth: 2 }}>
+                          <Image style={{ width: 30, height: 30 }} source={this.logoOne} resizeMode='contain' />
+                          <View style={{ flexDirection: 'column', marginLeft: 5, width: 120, justifyContent: 'center', alignItems: 'center', height: 60 }}>
+                            <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Name</Text>
+                            <Text style={{ fontSize: 10 }}>{item.name}</Text>
+                          </View>
+                          <View style={{ flexDirection: 'column', marginLeft: 5, width: 150, justifyContent: 'center', alignItems: 'center', height: 60 }}>
+                            <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Email</Text>
+                            <Text style={{ fontSize: 10 }}>{item.email}</Text>
+                          </View>
+                        </View>
+                      </TouchableOpacity>
+                    )
+                  }
+                })()}
+              </View>
+            } />
+        </View>
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -57,17 +111,19 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = ({ Reducer }) => {
-    const {dataList, dataListLoad, dataModalType, dataModalTypeText, dataModalInfo, dataVisible } = Reducer
-    return {
-        dataList, dataListLoad, dataModalType, dataModalTypeText, dataModalInfo, dataVisible
-    }
+  const { dataList, dataListLoad, dataVisible } = Reducer
+  return {
+    dataList, dataListLoad, dataVisible
+  }
 }
 
 const dispatchToProps = dispatch => {
-    return bindActionCreators({
-        getDataList,
-        setDataDisable
-    }, dispatch)
+  return bindActionCreators({
+    getDataList,
+    setDataDisable
+  }, dispatch)
 }
 
-export default connect(mapStateToProps, dispatchToProps) (HomeScreen)
+// export default connect(mapStateToProps, dispatchToProps) (HomeScreen)
+export default (HomeScreen)
+
