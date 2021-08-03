@@ -38,7 +38,7 @@ function MainStackNavigator() {
         <Stack.Screen
           name='Detail'
           component={Detail}
-          options={{ title: 'Detail' }}
+          options={{ title: 'Detail Screen' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

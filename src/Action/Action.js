@@ -9,7 +9,6 @@ export const LOGOUT                  = 'logout'
 const URL_GetData = 'https://jsonplaceholder.typicode.com/users'
 
 export const getDataList = () => {
-    console.log("ACTION")
     return (dispatch) => {
         dispatch({ type: GET_DATA_LIST })
         const fetchConfig = {
@@ -19,10 +18,15 @@ export const getDataList = () => {
                 'content-type': 'application/json',
             })
         }
-        return fetch(url)
-        .then(response => response.json() )
-        .then(data => console.log(data) )
-        .catch(error => console.log(error));
+        return fetch(URL_GetData).then((response) => {
+            console.log(response);
+            return response.json()
+        }).then((data) => {
+            console.log("ActionData")
+            console.log(data);
+            alertLoading(dispatch)
+            setDataList(dispatch, data)
+        }).catch(error => console.log(error));
     }
 }
 
@@ -31,12 +35,12 @@ export const setDataList = (dispatch, dataList) => {
 }
 
 export const setDataVisible = (dispatch, dataVisible) => {
-    dispatch({ type: TRANSACTION_VISIBLE, dataVisible })
+    dispatch({ type: DATA_VISIBLE, dataVisible })
 }
 
 export const setDataDisable = (dataVisible) => {
     return (dispatch) => {
-        dispatch({ type: TRANSACTION_VISIBLE, dataVisible })
+        dispatch({ type: DATA_VISIBLE, dataVisible })
     }
 }
 
